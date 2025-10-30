@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1761823290 source:c:\algolabs\snakegame\main.cpp
+	<iostream>
+	<vector>
+	<deque>
+
+1761677583 source:c:\algolabs\snakegame\field.cpp
+
+1761677583 source:c:\algolabs\snakegame\food.cpp
+
+1761677584 source:c:\algolabs\snakegame\snake.cpp
+
