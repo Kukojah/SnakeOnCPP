@@ -1,14 +1,25 @@
 #include <iostream>
 #include <vector>
 #include <deque>
+#include <windows.h>
 
-const int FIELD_WIDTH = 40;
-const int FIELD_HEIGHT = 30;
+const int FPS = 60;
+const int FIELD_WIDTH = 20;
+const int FIELD_HEIGHT = 15;
+
+enum class Direction {
+    up,
+    right,
+    down,
+    left
+};
 
 int UpdateCheck;
 std::vector<std::vector<int>> Field(FIELD_WIDTH, std::vector<int> (FIELD_HEIGHT, 0));
 std::vector<int> Fruit(2, 0);
 std::deque<std::vector<int>> Snake(2, std::vector<int> (2, 0));
+bool GameRun = true;
+Direction SnakeDirctn = right;
 
 std::vector<int> SetFruitPos();
 
@@ -16,16 +27,29 @@ std::deque<std::vector<int>> SetSnakePos();
 
 int PrintField(std::vector<std::vector<int>> Field);
 
+Direction ReadKeys()
+{
+    int[] KeysPressed = GetAsyncKeyState(VK_UP);
+};
+
 std::vector<std::vector<int>> UpdateField(std::vector<int> Fruit, std::deque<std::vector<int>> Snake);
 
 int main()
 {
+    system("cls");
     Snake = SetSnakePos();
     Fruit = SetFruitPos();
-    Field = UpdateField(Fruit, Snake);
-
-    UpdateCheck = PrintField(Field);
-
+    while (GameRun)
+    {
+        Field = UpdateField(Fruit, Snake);
+        UpdateCheck = PrintField(Field);
+        if ((GetAsyncKeyState(VK_SPACE) & 0x8000) != 0)
+        {
+            GameRun = false;
+        }
+        Sleep(1000 / FPS);
+        system("cls");
+    }
     return UpdateCheck;
 }
 
@@ -51,7 +75,7 @@ int PrintField(std::vector<std::vector<int>> Field)
             std::cout << Field[u][i];
         }
     std::cout << std::endl;
-
+    }
     return 1;
 }
 
@@ -61,7 +85,7 @@ std::vector<std::vector<int>> UpdateField(std::vector<int> Fruit, std::deque<std
 
     NewField[Fruit[0]][Fruit[1]] = 1;
     NewField[Snake[0][0]][Snake[0][1]] = 2;
-    NewField[Snake[1][0]][Snake[1][1]] = 2
+    NewField[Snake[1][0]][Snake[1][1]] = 2;
 
     return NewField;
 }
