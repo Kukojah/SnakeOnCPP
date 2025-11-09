@@ -3,23 +3,16 @@
 #include <deque>
 #include <windows.h>
 
-const int FPS = 60;
+const int FPS = 30;
 const int FIELD_WIDTH = 20;
 const int FIELD_HEIGHT = 15;
-
-enum class Direction {
-    up,
-    right,
-    down,
-    left
-};
 
 int UpdateCheck;
 std::vector<std::vector<int>> Field(FIELD_WIDTH, std::vector<int> (FIELD_HEIGHT, 0));
 std::vector<int> Fruit(2, 0);
 std::deque<std::vector<int>> Snake(2, std::vector<int> (2, 0));
 bool GameRun = true;
-Direction SnakeDirctn = right;
+char SnakeDrctn = 'r';
 
 std::vector<int> SetFruitPos();
 
@@ -27,10 +20,7 @@ std::deque<std::vector<int>> SetSnakePos();
 
 int PrintField(std::vector<std::vector<int>> Field);
 
-Direction ReadKeys()
-{
-    int[] KeysPressed = GetAsyncKeyState(VK_UP);
-};
+char ReadKeys(char CurrKey);
 
 std::vector<std::vector<int>> UpdateField(std::vector<int> Fruit, std::deque<std::vector<int>> Snake);
 
@@ -42,13 +32,14 @@ int main()
     while (GameRun)
     {
         Field = UpdateField(Fruit, Snake);
+        SnakeDrctn = ReadKeys(SnakeDrctn);
         UpdateCheck = PrintField(Field);
+        std::cout << SnakeDrctn;
         if ((GetAsyncKeyState(VK_SPACE) & 0x8000) != 0)
         {
             GameRun = false;
         }
         Sleep(1000 / FPS);
-        system("cls");
     }
     return UpdateCheck;
 }
@@ -68,6 +59,7 @@ std::deque<std::vector<int>> SetSnakePos()
 
 int PrintField(std::vector<std::vector<int>> Field)
 {
+    system("cls");
     for (int i = 0; i < FIELD_HEIGHT; i++)
     {
         for (int u = 0; u < FIELD_WIDTH; u++)
@@ -88,4 +80,32 @@ std::vector<std::vector<int>> UpdateField(std::vector<int> Fruit, std::deque<std
     NewField[Snake[1][0]][Snake[1][1]] = 2;
 
     return NewField;
+}
+
+char ReadKeys(char CurrKey)
+{
+    int KeysPressed[] = {
+    GetAsyncKeyState(VK_UP),
+    GetAsyncKeyState(VK_RIGHT),
+    GetAsyncKeyState(VK_DOWN),
+    GetAsyncKeyState(VK_LEFT)
+    };
+    char NewCurrKey = CurrKey;;
+    if ((KeysPressed[0] & 0x8000) != 0)
+    {
+        NewCurrKey = 'u';
+    };
+    if ((KeysPressed[1] & 0x8000) != 0)
+    {
+        NewCurrKey = 'r';
+    };
+    if ((KeysPressed[2] & 0x8000) != 0)
+    {
+        NewCurrKey = 'd';
+    };
+    if ((KeysPressed[3] & 0x8000) != 0)
+    {
+        NewCurrKey = 'l';
+    };
+    return NewCurrKey;
 }
