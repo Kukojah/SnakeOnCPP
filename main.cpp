@@ -2,8 +2,11 @@
 #include <vector>
 #include <deque>
 #include <windows.h>
+#ifndef VK_R
+#define VK_R 0x52
+#endif
 
-const int FPS = 30;
+const int FPS = 10;
 const int FIELD_WIDTH = 20;
 const int FIELD_HEIGHT = 15;
 
@@ -14,6 +17,8 @@ std::deque<std::vector<int>> Snake(2, std::vector<int> (2, 0));
 bool GameRun = true;
 char SnakeDrctn = 'o';
 std::vector<int> SnakeMoves = {0, 0};
+int Score = 0;
+bool IsInSnake = false;
 
 std::vector<int> SetFruitPos();
 
@@ -36,16 +41,40 @@ int main()
     Fruit = SetFruitPos();
     while (GameRun)
     {
-        Field = UpdateField(Fruit, Snake);
         SnakeDrctn = ReadKeys(SnakeDrctn);
         SnakeMoves = SetSnakeMove(SnakeDrctn);
         Snake = UpdateSnakePos(Snake, SnakeMoves);
+        if (Snake[0][0] == Fruit[0] && Snake[0][1] == Fruit[1])
+        {
+            IsInSnake = true;
+            while (IsInSnake){
+                IsInSnake = false;
+                Fruit = SetFruitPos();
+                for (std::vector<int> Value : Snake)
+                {
+                    if (Value[0] == Fruit[0] && Value[1] == Fruit[1])
+                    {
+                        IsInSnake = true;
+                    }
+                }
+            }
+            Score++;
+        }
         UpdateCheck = PrintField(Field);
-        std::cout << SnakeDrctn;
+        std::cout << Score;
+        if ((GetAsyncKeyState(VK_R) & 0x8000) != 0)
+        {
+            SnakeDrctn = 'o';
+            SnakeMoves = {0, 0};
+            Score = 0;
+            Snake = SetSnakePos();
+            Fruit = SetFruitPos();
+        }
         if ((GetAsyncKeyState(VK_SPACE) & 0x8000) != 0)
         {
             GameRun = false;
         }
+        Field = UpdateField(Fruit, Snake);
         Sleep(1000 / FPS);
     }
     return UpdateCheck;
@@ -81,11 +110,11 @@ int PrintField(std::vector<std::vector<int>> Field)
 std::deque<std::vector<int>> UpdateSnakePos(std::deque<std::vector<int>> Snake, std::vector<int> SnakeMoves)
 {
     std::deque<std::vector<int>> NewSnake = Snake;
-    if (NewSnake[0][0] + SnakeMoves[0] > FIELD_HEIGHT || NewSnake[0][0] + SnakeMoves[0] < 0)
+    if (NewSnake[0][0] + SnakeMoves[0] > FIELD_WIDTH - 1 || NewSnake[0][0] + SnakeMoves[0] < 0)
     {
         NewSnake = SetSnakePos();
     }
-    if (NewSnake[0][1] + SnakeMoves[1] > FIELD_WIDTH || NewSnake[0][1] + SnakeMoves[1] < 0)
+    if (NewSnake[0][1] + SnakeMoves[1] > FIELD_HEIGHT - 1 || NewSnake[0][1] + SnakeMoves[1] < 0)
     {
         NewSnake = SetSnakePos();
     }
@@ -106,19 +135,19 @@ char ReadKeys(char CurrKey)
     GetAsyncKeyState(VK_LEFT)
     };
     char NewCurrKey = CurrKey;
-    if ((KeysPressed[0] & 0x8000) != 0)
+    if ((KeysPressed[0] & 0x8000) != 0 && CurrKey != 'd')
     {
         NewCurrKey = 'u';
     };
-    if ((KeysPressed[1] & 0x8000) != 0)
+    if ((KeysPressed[1] & 0x8000) != 0 && CurrKey != 'l')
     {
         NewCurrKey = 'r';
     };
-    if ((KeysPressed[2] & 0x8000) != 0)
+    if ((KeysPressed[2] & 0x8000) != 0 && CurrKey != 'u')
     {
         NewCurrKey = 'd';
     };
-    if ((KeysPressed[3] & 0x8000) != 0)
+    if ((KeysPressed[3] & 0x8000) != 0 && CurrKey != 'r')
     {
         NewCurrKey = 'l';
     };
