@@ -12,7 +12,8 @@ std::vector<std::vector<int>> Field(FIELD_WIDTH, std::vector<int> (FIELD_HEIGHT,
 std::vector<int> Fruit(2, 0);
 std::deque<std::vector<int>> Snake(2, std::vector<int> (2, 0));
 bool GameRun = true;
-char SnakeDrctn = 'r';
+char SnakeDrctn = 'o';
+std::vector<int> SnakeMoves = {0, 0};
 
 std::vector<int> SetFruitPos();
 
@@ -21,6 +22,10 @@ std::deque<std::vector<int>> SetSnakePos();
 int PrintField(std::vector<std::vector<int>> Field);
 
 char ReadKeys(char CurrKey);
+
+std::vector<int> SetSnakeMove(char SnakeDrctn);
+
+std::deque<std::vector<int>> UpdateSnakePos(std::deque<std::vector<int>> Snake, std::vector<int> SnakeMoves);
 
 std::vector<std::vector<int>> UpdateField(std::vector<int> Fruit, std::deque<std::vector<int>> Snake);
 
@@ -33,6 +38,8 @@ int main()
     {
         Field = UpdateField(Fruit, Snake);
         SnakeDrctn = ReadKeys(SnakeDrctn);
+        SnakeMoves = SetSnakeMove(SnakeDrctn);
+        Snake = UpdateSnakePos(Snake, SnakeMoves);
         UpdateCheck = PrintField(Field);
         std::cout << SnakeDrctn;
         if ((GetAsyncKeyState(VK_SPACE) & 0x8000) != 0)
@@ -71,15 +78,23 @@ int PrintField(std::vector<std::vector<int>> Field)
     return 1;
 }
 
-std::vector<std::vector<int>> UpdateField(std::vector<int> Fruit, std::deque<std::vector<int>> Snake)
+std::deque<std::vector<int>> UpdateSnakePos(std::deque<std::vector<int>> Snake, std::vector<int> SnakeMoves)
 {
-    std::vector<std::vector<int>> NewField(FIELD_WIDTH, std::vector<int> (FIELD_HEIGHT, 0));
+    std::deque<std::vector<int>> NewSnake = Snake;
+    if (NewSnake[0][0] + SnakeMoves[0] > FIELD_HEIGHT || NewSnake[0][0] + SnakeMoves[0] < 0)
+    {
+        NewSnake = SetSnakePos();
+    }
+    if (NewSnake[0][1] + SnakeMoves[1] > FIELD_WIDTH || NewSnake[0][1] + SnakeMoves[1] < 0)
+    {
+        NewSnake = SetSnakePos();
+    }
+    NewSnake[1][0] = Snake[0][0];
+    NewSnake[1][1] = Snake[0][1];
+    NewSnake[0][0] += SnakeMoves[0];
+    NewSnake[0][1] += SnakeMoves[1];
 
-    NewField[Fruit[0]][Fruit[1]] = 1;
-    NewField[Snake[0][0]][Snake[0][1]] = 2;
-    NewField[Snake[1][0]][Snake[1][1]] = 2;
-
-    return NewField;
+    return NewSnake;
 }
 
 char ReadKeys(char CurrKey)
@@ -90,7 +105,7 @@ char ReadKeys(char CurrKey)
     GetAsyncKeyState(VK_DOWN),
     GetAsyncKeyState(VK_LEFT)
     };
-    char NewCurrKey = CurrKey;;
+    char NewCurrKey = CurrKey;
     if ((KeysPressed[0] & 0x8000) != 0)
     {
         NewCurrKey = 'u';
@@ -108,4 +123,37 @@ char ReadKeys(char CurrKey)
         NewCurrKey = 'l';
     };
     return NewCurrKey;
+}
+
+std::vector<int> SetSnakeMove(char SnakeDrctn)
+{
+    std::vector<int> SnakeMove = {0, 0};
+    if (SnakeDrctn == 'u')
+    {
+        SnakeMove = {0, -1};
+    };
+    if (SnakeDrctn == 'r')
+    {
+        SnakeMove = {1, 0};
+    };
+    if (SnakeDrctn == 'd')
+    {
+        SnakeMove = {0, 1};
+    };
+    if (SnakeDrctn == 'l')
+    {
+        SnakeMove = {-1, 0};
+    };
+    return SnakeMove;
+}
+
+std::vector<std::vector<int>> UpdateField(std::vector<int> Fruit, std::deque<std::vector<int>> Snake)
+{
+    std::vector<std::vector<int>> NewField(FIELD_WIDTH, std::vector<int> (FIELD_HEIGHT, 0));
+
+    NewField[Fruit[0]][Fruit[1]] = 1;
+    NewField[Snake[0][0]][Snake[0][1]] = 2;
+    NewField[Snake[1][0]][Snake[1][1]] = 2;
+
+    return NewField;
 }
