@@ -19,7 +19,7 @@ class Field
         return Layout;
         }
 
-    int PrintField()
+    int PrintField(int Score)
     {
         system("cls");
         for (int i = 0; i < Height; i++)
@@ -30,13 +30,14 @@ class Field
             }
             std::cout << std::endl;
         }
+        std::cout << Score;
         return 1;
     }
 
-    std::vector<std::vector<int>> UpdateLayout(std::vector<int> Fruit, std::deque<std::vector<int>> Snake)
+    std::vector<std::vector<int>> UpdateLayout(std::vector<int> FoodPos, std::deque<std::vector<int>> Snake)
     {
         std::vector<std::vector<int>> NewLayout(Width, std::vector<int> (Height, 0));
-        NewLayout[Fruit[0]][Fruit[1]] = 1;
+        NewLayout[FoodPos[0]][FoodPos[1]] = 1;
         NewLayout[Snake[0][0]][Snake[0][1]] = 2;
         NewLayout[Snake[1][0]][Snake[1][1]] = 2;
         Layout = NewLayout;

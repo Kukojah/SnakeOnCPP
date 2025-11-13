@@ -3,6 +3,7 @@
 #include <deque>
 #include <windows.h>
 #include "field.cpp"
+#include "food.cpp"
 #ifndef VK_R
 #define VK_R 0x52
 #endif
@@ -13,15 +14,13 @@ const int FIELD_HEIGHT = 15;
 
 int UpdateCheck;
 Field GameField;
-std::vector<int> Fruit(2, 0);
+Food Meat;
 std::deque<std::vector<int>> Snake(2, std::vector<int> (2, 0));
 bool GameRun = true;
 char SnakeDrctn = 'o';
 std::vector<int> SnakeMoves = {0, 0};
 int Score = 0;
 bool IsInSnake = false;
-
-std::vector<int> SetFruitPos();
 
 std::deque<std::vector<int>> SetSnakePos();
 
@@ -36,55 +35,34 @@ int main()
     system("cls");
     GameField.SetField(FIELD_WIDTH, FIELD_HEIGHT);
     Snake = SetSnakePos();
-    Fruit = SetFruitPos();
+    Meat.SetFoodPos(Snake, FIELD_WIDTH, FIELD_HEIGHT);
     while (GameRun)
     {
         SnakeDrctn = ReadKeys(SnakeDrctn);
         SnakeMoves = SetSnakeMove(SnakeDrctn);
         Snake = UpdateSnakePos(Snake, SnakeMoves);
-        if (Snake[0][0] == Fruit[0] && Snake[0][1] == Fruit[1])
+        if (Meat.CheckCollision(Snake))
         {
-            IsInSnake = true;
-            while (IsInSnake)
-            {
-                IsInSnake = false;
-                Fruit = SetFruitPos();
-                for (std::vector<int> Value : Snake)
-                {
-                    if (Value[0] == Fruit[0] && Value[1] == Fruit[1])
-                    {
-                        IsInSnake = true;
-                    }
-                }
-            }
+            Meat.SetFoodPos(Snake, FIELD_WIDTH, FIELD_HEIGHT);
             Score++;
         }
-        std::cout << Score;
         if ((GetAsyncKeyState(VK_R) & 0x8000) != 0)
         {
             SnakeDrctn = 'o';
             SnakeMoves = {0, 0};
             Score = 0;
             Snake = SetSnakePos();
-            Fruit = SetFruitPos();
+            Meat.SetFoodPos(Snake, FIELD_WIDTH, FIELD_HEIGHT);
         }
         if ((GetAsyncKeyState(VK_SPACE) & 0x8000) != 0)
         {
             GameRun = false;
         }
-        GameField.UpdateLayout(Fruit, Snake);
-        UpdateCheck = GameField.PrintField();
+        GameField.UpdateLayout(Meat.ReadPos(), Snake);
+        UpdateCheck = GameField.PrintField(Score);
         Sleep(1000 / FPS);
     }
     return UpdateCheck;
-}
-
-std::vector<int> SetFruitPos()
-{
-    int X = rand() % FIELD_WIDTH;
-    int Y = rand() % FIELD_HEIGHT;
-
-    return {X, Y};
 }
 
 std::deque<std::vector<int>> SetSnakePos()
