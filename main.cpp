@@ -2,6 +2,7 @@
 #include <vector>
 #include <deque>
 #include <windows.h>
+#include "field.cpp"
 #ifndef VK_R
 #define VK_R 0x52
 #endif
@@ -11,7 +12,7 @@ const int FIELD_WIDTH = 20;
 const int FIELD_HEIGHT = 15;
 
 int UpdateCheck;
-std::vector<std::vector<int>> Field(FIELD_WIDTH, std::vector<int> (FIELD_HEIGHT, 0));
+Field GameField;
 std::vector<int> Fruit(2, 0);
 std::deque<std::vector<int>> Snake(2, std::vector<int> (2, 0));
 bool GameRun = true;
@@ -24,19 +25,16 @@ std::vector<int> SetFruitPos();
 
 std::deque<std::vector<int>> SetSnakePos();
 
-int PrintField(std::vector<std::vector<int>> Field);
-
 char ReadKeys(char CurrKey);
 
 std::vector<int> SetSnakeMove(char SnakeDrctn);
 
 std::deque<std::vector<int>> UpdateSnakePos(std::deque<std::vector<int>> Snake, std::vector<int> SnakeMoves);
 
-std::vector<std::vector<int>> UpdateField(std::vector<int> Fruit, std::deque<std::vector<int>> Snake);
-
 int main()
 {
     system("cls");
+    GameField.SetField(FIELD_WIDTH, FIELD_HEIGHT);
     Snake = SetSnakePos();
     Fruit = SetFruitPos();
     while (GameRun)
@@ -47,7 +45,8 @@ int main()
         if (Snake[0][0] == Fruit[0] && Snake[0][1] == Fruit[1])
         {
             IsInSnake = true;
-            while (IsInSnake){
+            while (IsInSnake)
+            {
                 IsInSnake = false;
                 Fruit = SetFruitPos();
                 for (std::vector<int> Value : Snake)
@@ -60,7 +59,6 @@ int main()
             }
             Score++;
         }
-        UpdateCheck = PrintField(Field);
         std::cout << Score;
         if ((GetAsyncKeyState(VK_R) & 0x8000) != 0)
         {
@@ -74,7 +72,8 @@ int main()
         {
             GameRun = false;
         }
-        Field = UpdateField(Fruit, Snake);
+        GameField.UpdateLayout(Fruit, Snake);
+        UpdateCheck = GameField.PrintField();
         Sleep(1000 / FPS);
     }
     return UpdateCheck;
@@ -91,20 +90,6 @@ std::vector<int> SetFruitPos()
 std::deque<std::vector<int>> SetSnakePos()
 {
     return {{FIELD_WIDTH / 2, FIELD_HEIGHT / 2}, {(FIELD_WIDTH / 2) - 1, FIELD_HEIGHT / 2}};
-}
-
-int PrintField(std::vector<std::vector<int>> Field)
-{
-    system("cls");
-    for (int i = 0; i < FIELD_HEIGHT; i++)
-    {
-        for (int u = 0; u < FIELD_WIDTH; u++)
-        {
-            std::cout << Field[u][i];
-        }
-    std::cout << std::endl;
-    }
-    return 1;
 }
 
 std::deque<std::vector<int>> UpdateSnakePos(std::deque<std::vector<int>> Snake, std::vector<int> SnakeMoves)
@@ -174,15 +159,4 @@ std::vector<int> SetSnakeMove(char SnakeDrctn)
         SnakeMove = {-1, 0};
     };
     return SnakeMove;
-}
-
-std::vector<std::vector<int>> UpdateField(std::vector<int> Fruit, std::deque<std::vector<int>> Snake)
-{
-    std::vector<std::vector<int>> NewField(FIELD_WIDTH, std::vector<int> (FIELD_HEIGHT, 0));
-
-    NewField[Fruit[0]][Fruit[1]] = 1;
-    NewField[Snake[0][0]][Snake[0][1]] = 2;
-    NewField[Snake[1][0]][Snake[1][1]] = 2;
-
-    return NewField;
 }
