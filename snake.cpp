@@ -1,1 +1,68 @@
+#include <iostream>
+#include <vector>
+#include <deque>
+#include <windows.h>
 
+class Snake
+{
+    private:
+        std::deque<std::vector<int>> Pos;
+        std::vector<int> Movement;
+    public:
+        std::deque<std::vector<int>> SetPos(int W, int H)
+        {
+            Pos = {{W / 2, H / 2}, {(W / 2) - 1, H / 2}};
+            Movement = {0, 0};
+            return Pos;
+        }
+
+        std::deque<std::vector<int>> ReadPos()
+        {
+            return Pos;
+        }
+
+        std::vector<int> ReadMovement()
+        {
+            return Movement;
+        }
+
+        std::vector<int> SetMove(char LastInput)
+        {
+            if (LastInput == 'u')
+            {
+                Movement = {0, -1};
+            };
+            if (LastInput == 'r')
+            {
+                Movement = {1, 0};
+            };
+            if (LastInput == 'd')
+            {
+                Movement = {0, 1};
+            };
+            if (LastInput == 'l')
+            {
+                Movement = {-1, 0};
+            };
+            return Movement;
+        }
+
+        std::deque<std::vector<int>> UpdatePos(int W, int H)
+        {
+            std::deque<std::vector<int>> NewPos = Pos;
+            if (NewPos[0][0] + Movement[0] > W - 1 || NewPos[0][0] + Movement[0] < 0)
+            {
+                Pos = SetPos(W, H);
+            }
+            if (NewPos[0][1] + Movement[1] > H - 1 || NewPos[0][1] + Movement[1] < 0)
+            {
+                Pos = SetPos(W, H);
+            }
+            Pos[1][0] = Pos[0][0];
+            Pos[1][1] = Pos[0][1];
+            Pos[0][0] += Movement[0];
+            Pos[0][1] += Movement[1];
+
+            return NewPos;
+        }
+};
