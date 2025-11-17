@@ -7,11 +7,13 @@ class Snake
 {
     private:
         std::deque<std::vector<int>> Pos;
+        int Length;
         std::vector<int> Movement;
     public:
         std::deque<std::vector<int>> SetPos(int W, int H)
         {
             Pos = {{W / 2, H / 2}, {(W / 2) - 1, H / 2}};
+            Length = Pos.size();
             Movement = {0, 0};
             return Pos;
         }
@@ -58,8 +60,11 @@ class Snake
             {
                 Pos = SetPos(W, H);
             }
-            Pos[1][0] = Pos[0][0];
-            Pos[1][1] = Pos[0][1];
+            for (int i = Length - 1; i >= 1; i--)
+            {
+                Pos[i][0] = Pos[i - 1][0];
+                Pos[i][1] = Pos[i - 1][1];
+            }
             Pos[0][0] += Movement[0];
             Pos[0][1] += Movement[1];
 

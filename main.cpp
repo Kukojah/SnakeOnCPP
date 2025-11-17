@@ -28,7 +28,7 @@ int main()
     system("cls");
     GameField.SetField(FIELD_WIDTH, FIELD_HEIGHT);
     Player.SetPos(FIELD_WIDTH, FIELD_HEIGHT);
-    Meat.SetFoodPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
+    Meat.SetPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
     while (GameRun)
     {
         SnakeDrctn = ReadKeys(SnakeDrctn);
@@ -36,7 +36,7 @@ int main()
         Player.UpdatePos(FIELD_WIDTH, FIELD_HEIGHT);
         if (Meat.CheckCollision(Player.ReadPos()))
         {
-            Meat.SetFoodPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
+            Meat.SetPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
             Score++;
         }
         if ((GetAsyncKeyState(VK_R) & 0x8000) != 0)
@@ -44,7 +44,7 @@ int main()
             SnakeDrctn = 'o';
             Player.SetPos(FIELD_WIDTH, FIELD_HEIGHT);
             Score = 0;
-            Meat.SetFoodPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
+            Meat.SetPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
         }
         if ((GetAsyncKeyState(VK_SPACE) & 0x8000) != 0)
         {

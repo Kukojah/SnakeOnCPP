@@ -8,7 +8,7 @@ class Food
     private:
         std::vector<int> Pos;
     public:
-        std::vector<int> SetFoodPos(std::deque<std::vector<int>> Snake, int W, int H)
+        std::vector<int> SetPos(std::deque<std::vector<int>> Snake, int W, int H)
         {
             Pos.resize(2, 0);
             do
