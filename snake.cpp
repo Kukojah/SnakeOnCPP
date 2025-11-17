@@ -51,15 +51,6 @@ class Snake
 
         std::deque<std::vector<int>> UpdatePos(int W, int H)
         {
-            std::deque<std::vector<int>> NewPos = Pos;
-            if (NewPos[0][0] + Movement[0] > W - 1 || NewPos[0][0] + Movement[0] < 0)
-            {
-                Pos = SetPos(W, H);
-            }
-            if (NewPos[0][1] + Movement[1] > H - 1 || NewPos[0][1] + Movement[1] < 0)
-            {
-                Pos = SetPos(W, H);
-            }
             for (int i = Length - 1; i >= 1; i--)
             {
                 Pos[i][0] = Pos[i - 1][0];
@@ -68,6 +59,6 @@ class Snake
             Pos[0][0] += Movement[0];
             Pos[0][1] += Movement[1];
 
-            return NewPos;
+            return {};
         }
 };

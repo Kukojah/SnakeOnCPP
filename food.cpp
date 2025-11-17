@@ -24,15 +24,4 @@ class Food
             return {Pos[0], Pos[1]};
         }
 
-        bool CheckCollision(std::deque<std::vector<int>> Snake)
-        {
-            for (std::vector<int> Value : Snake)
-            {
-                if (Value[0] == Pos[0] && Value[1] == Pos[1])
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
 };

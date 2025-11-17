@@ -15,7 +15,7 @@ class TheGame
         const int FPS = 10;
         const int FIELD_WIDTH = 20;
         const int FIELD_HEIGHT = 15;
-        int UpdateCheck;
+
         Field GameField;
         Food Meat;
         Snake Player;
@@ -49,39 +49,61 @@ class TheGame
             NewCurrKey = 'l';
         };
         return NewCurrKey;
-    }
+        }
+
+        int StartGame()
+        {
+            system("cls");
+            GameField.SetField(FIELD_WIDTH, FIELD_HEIGHT);
+            Meat.SetPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
+            Player.SetPos(FIELD_WIDTH, FIELD_HEIGHT);
+            return 0;
+        }
+
+        int CheckCollision(std::deque<std::vector<int>> SnakePos, std::vector<int> FoodPos, int OldScore)
+        {
+            int NewScore = OldScore;
+            if (SnakePos[0][0] > FIELD_WIDTH - 1 || SnakePos[0][0] < 0)
+            {
+                Player.SetPos(FIELD_WIDTH, FIELD_HEIGHT);
+            };
+            if (SnakePos[0][1] > FIELD_HEIGHT - 1 || SnakePos[0][1] < 0)
+            {
+                Player.SetPos(FIELD_WIDTH, FIELD_HEIGHT);
+            };
+            if (SnakePos[0][0] == FoodPos[0] && SnakePos[0][1] == FoodPos[1])
+            {
+                    Meat.SetPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
+                    NewScore++;
+            };
+            return NewScore;
+        }
 
     public:
-        int RunGame(){
-        system("cls");
-        GameField.SetField(FIELD_WIDTH, FIELD_HEIGHT);
-        Player.SetPos(FIELD_WIDTH, FIELD_HEIGHT);
-        Meat.SetPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
-        while (GameRun)
+        int RunGame()
         {
-            SnakeDrctn = ReadKeys(SnakeDrctn);
-            Player.SetMove(SnakeDrctn);
-            Player.UpdatePos(FIELD_WIDTH, FIELD_HEIGHT);
-            if (Meat.CheckCollision(Player.ReadPos()))
+            StartGame();
+            while (GameRun)
             {
-                Meat.SetPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
-                Score++;
+                SnakeDrctn = ReadKeys(SnakeDrctn);
+                Player.SetMove(SnakeDrctn);
+                Player.UpdatePos(FIELD_WIDTH, FIELD_HEIGHT);
+                Score = CheckCollision(Player.ReadPos(), Meat.ReadPos(), Score);
+                if ((GetAsyncKeyState(VK_R) & 0x8000) != 0)
+                {
+                    SnakeDrctn = 'o';
+                    Player.SetPos(FIELD_WIDTH, FIELD_HEIGHT);
+                    Score = 0;
+                    Meat.SetPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
+                }
+                if ((GetAsyncKeyState(VK_SPACE) & 0x8000) != 0)
+                {
+                    GameRun = false;
+                }
+                GameField.UpdateLayout(Meat.ReadPos(), Player.ReadPos());
+                GameField.PrintField(Score);
+                Sleep(1000 / FPS);
             }
-            if ((GetAsyncKeyState(VK_R) & 0x8000) != 0)
-            {
-                SnakeDrctn = 'o';
-                Player.SetPos(FIELD_WIDTH, FIELD_HEIGHT);
-                Score = 0;
-                Meat.SetPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
-            }
-            if ((GetAsyncKeyState(VK_SPACE) & 0x8000) != 0)
-            {
-                GameRun = false;
-            }
-            GameField.UpdateLayout(Meat.ReadPos(), Player.ReadPos());
-            UpdateCheck = GameField.PrintField(Score);
-            Sleep(1000 / FPS);
+            return 0;
         }
-        return UpdateCheck;
-    }
 };
