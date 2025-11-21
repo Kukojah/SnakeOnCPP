@@ -23,8 +23,9 @@ class Snake
             return Pos;
         }
 
-        std::vector<int> ReadMovement()
+        std::vector<int> SetMovement(std::vector<int> NewMovement)
         {
+            Movement = NewMovement;
             return Movement;
         }
 
