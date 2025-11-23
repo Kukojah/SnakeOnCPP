@@ -20,6 +20,7 @@ class TheGame
         Snake Player;
         bool GameRun = true;
         bool GameOver = false;
+        bool GameWon = false;
         char SnakeDrctn = 'o';
         int Score = 0;
 
@@ -75,6 +76,11 @@ class TheGame
         if (SnakePos[0][0] == FoodPos[0] && SnakePos[0][1] == FoodPos[1])
         {
             Player.IncreaseSize(FIELD_WIDTH, FIELD_HEIGHT);
+            if (Player.ReadPos().size() >= FIELD_WIDTH * FIELD_WIDTH)
+            {
+                GameWon = true;
+                GameRun = false;
+            }
             Meat.SetPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
             NewScore++;
         };
@@ -112,6 +118,15 @@ public:
             GameField.UpdateLayout(Meat.ReadPos(), Player.ReadPos());
             GameField.PrintField(Score);
             Sleep(1000 / FPS);
+        }
+        if (GameWon)
+        {
+            system("cls");
+            std::cout << "You Won!";
+            while ((GetAsyncKeyState(VK_SPACE) & 0x8000) == 0)
+            {
+                Sleep(1000 / FPS);
+            }
         }
         return 0;
     }
