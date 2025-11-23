@@ -14,7 +14,7 @@ class Snake
         {
             Pos = {{W / 2, H / 2}, {(W / 2) - 1, H / 2}};
             Length = Pos.size();
-            Movement = {0, 0};
+            Movement = {-1, 0};
             return Pos;
         }
 
@@ -27,6 +27,52 @@ class Snake
         {
             Movement = NewMovement;
             return Movement;
+        }
+
+        /*bool CheckSelfCollision(std::deque<std::vector<int>> PosToCheck, int ThePos)
+        {
+            std::deque<std::vector<int>> PosChecking = PosToCheck;
+            if ()
+            for (std::vector<int> Value : PosChecking)
+            {
+                if (Value[0] == PosToCheck[ThePos][0] && Value[1] == PosToCheck[ThePos][1])
+                {
+                    return true
+                }
+            }
+            return false;
+        }*/
+
+        int IncreaseSize()
+        {
+            Pos.push_back(std::vector<int> (2, 0));
+            Pos[Length][0] = Pos[Length - 1][0] - Movement[0];
+            Pos[Length][1] = Pos[Length - 1][1] - Movement[1];
+            /*if (CheckCollision(Pos, Length))
+            {
+                Pos[Length][0] = Pos[Length - 1][0] - 1;
+                Pos[Length][1] = Pos[Length - 1][1];
+                if (CheckCollision(Pos, Length))
+                {
+                    Pos[Length][0] = Pos[Length - 1][0] + 1;
+                    Pos[Length][1] = Pos[Length - 1][1];
+                    if (CheckCollision(Pos, Length))
+                    {
+                        Pos[Length][0] = Pos[Length - 1][0];
+                        Pos[Length][1] = Pos[Length - 1][1] - 1;
+                        if (CheckCollision(Pos, Length))
+                        {
+                            Pos[Length][0] = Pos[Length - 1][0];
+                            Pos[Length][1] = Pos[Length - 1][1] + 1;
+                        }
+                    }
+                }
+            }*/
+            Length++;
+            /*auto LastSegment = Pos.back();
+            Pos.push_back(LastSegment); // добавляем копию последнего элемента
+            Length = Pos.size();*/
+            return 0;
         }
 
         std::vector<int> SetMove(char LastInput)

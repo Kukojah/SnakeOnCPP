@@ -40,8 +40,10 @@ class Field
         NewLayout[FoodPos[0]][FoodPos[1]] = 1;
         for (std::vector<int> Value : Snake)
         {
-            NewLayout[Value[0]][Value[1]] = 2;
+             NewLayout[Value[0]][Value[1]] = 2;
         }
+        NewLayout[Snake[0][0]][Snake[0][1]] = 2;
+        NewLayout[Snake[1][0]][Snake[1][1]] = 2;
         Layout = NewLayout;
         return NewLayout;
     }

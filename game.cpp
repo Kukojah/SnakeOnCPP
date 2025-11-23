@@ -12,7 +12,7 @@
 class TheGame
 {
     private:
-        const int FPS = 10;
+        const int FPS = 5;
         const int FIELD_WIDTH = 20;
         const int FIELD_HEIGHT = 15;
         Field GameField;
@@ -74,6 +74,7 @@ class TheGame
         };
         if (SnakePos[0][0] == FoodPos[0] && SnakePos[0][1] == FoodPos[1])
         {
+            Player.IncreaseSize();
             Meat.SetPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
             NewScore++;
         };
