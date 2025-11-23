@@ -78,6 +78,14 @@ class TheGame
             Meat.SetPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
             NewScore++;
         };
+        std::deque<std::vector<int>> SnakeBody = Player.ReadPos();
+        for (int i = 1; i < SnakeBody.size(); i++)
+        {
+            if (SnakeBody[0][0] == SnakeBody[i][0] && SnakeBody[0][1] == SnakeBody[i][1])
+            {
+                GameOver = true;
+            }
+        }
         return NewScore;
     }
 
