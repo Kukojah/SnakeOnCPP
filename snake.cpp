@@ -43,11 +43,29 @@ class Snake
             return false;
         }*/
 
-        int IncreaseSize()
+        int IncreaseSize(int H, int W)
         {
             Pos.push_back(std::vector<int> (2, 0));
             Pos[Length][0] = Pos[Length - 1][0] - Movement[0];
             Pos[Length][1] = Pos[Length - 1][1] - Movement[1];
+            if ((Pos[Length][0] < 0 || Pos[Length][0] > W))
+            {
+                Pos[Length][0] = Pos[Length - 1][0];
+                Pos[Length][1] = Pos[Length - 1][1] - 1;
+                if ((Pos[Length][1] < 0 || Pos[Length][1] > H))
+                {
+                    Pos[Length][1] = Pos[Length - 1][1] + 1;
+                }
+            }
+            if ((Pos[Length][1] < 0 || Pos[Length][1] > H))
+            {
+                Pos[Length][0] = Pos[Length - 1][0] - 1;
+                Pos[Length][1] = Pos[Length - 1][1];
+                if ((Pos[Length][0] < 0 || Pos[Length][0] > W))
+                {
+                    Pos[Length][0] = Pos[Length - 1][0] + 1;
+                }
+            }
             /*if (CheckCollision(Pos, Length))
             {
                 Pos[Length][0] = Pos[Length - 1][0] - 1;

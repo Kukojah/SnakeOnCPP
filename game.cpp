@@ -74,7 +74,7 @@ class TheGame
         };
         if (SnakePos[0][0] == FoodPos[0] && SnakePos[0][1] == FoodPos[1])
         {
-            Player.IncreaseSize();
+            Player.IncreaseSize(FIELD_WIDTH, FIELD_HEIGHT);
             Meat.SetPos(Player.ReadPos(), FIELD_WIDTH, FIELD_HEIGHT);
             NewScore++;
         };
